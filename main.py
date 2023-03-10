@@ -1,8 +1,8 @@
 import os
 import sys
 from PIL import Image
-from pathlib import Path
 import imghdr
+import time
 import tkinter as tk
 from tkinter import ttk
 from tkinter import font
@@ -38,6 +38,10 @@ def resource_path(relative_path):
     return os.path.join(base_path, relative_path)
 
 def inspect_folder():
+
+    for item in tree.get_children():
+        tree.delete(item)
+
     photos = []
     folder_path = filedialog.askdirectory(initialdir='.', title='Choose the folder:')
 
@@ -54,18 +58,13 @@ def inspect_folder():
             if not image.verify:
                 continue
 
-            photos.append((file, 'x'.join(map(str, image.size)), image.info.get('dpi'), mode_to_bpp[image.mode],
+            tree.insert("", tk.END, values=(file, 'x'.join(map(str, image.size)), image.info.get('dpi'), mode_to_bpp[image.mode],
                            image.info.get('compression')))
             no_images = False
 
     if no_images:
         messagebox.showinfo(title="Info", message="No image files detected in '" + folder_path + "'")
 
-    for item in tree.get_children():
-        tree.delete(item)
-
-    for image in photos:
-        tree.insert("", tk.END, values=image)
 
 
 def clear_table():
